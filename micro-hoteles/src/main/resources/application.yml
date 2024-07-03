@@ -1,0 +1,25 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: micro-hoteles
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://localhost:1433;databaseName=BDUsers;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password: sqlserver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: sqlserver
+    database-platform: org.hibernate.dialect.SQLServerDialect
+  config:
+    import: optional:configserver:htpp://localhost:8888
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
