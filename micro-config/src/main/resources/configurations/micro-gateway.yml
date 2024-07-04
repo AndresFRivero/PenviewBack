@@ -1,0 +1,29 @@
+eureka:
+  client:
+    register-with-eureka: false
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: micro-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+      - id: micro-auth
+        uri: http://localhost:8090
+        predicates:
+         - Path=/auth/v1/**
+      - id: micro-usuarios
+        uri: http://localhost:8091
+        predicates:
+         - Path=/api/usuarios/**
+      - id: micro-hoteles
+        uri: http://localhost:8092
+        predicates:
+         - Path=/api/hoteles/**
