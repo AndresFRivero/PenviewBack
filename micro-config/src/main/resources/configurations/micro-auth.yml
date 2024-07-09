@@ -6,12 +6,14 @@ spring:
     name: micro-auth
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost:1433;databaseName=BDUsers;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=DBSecurity;encrypt=true;trustServerCertificate=true;
     username: sa
     password: sqlserver
   jpa:
     hibernate:
       ddl-auto: none
+      naming:
+        physical-strategy: com.penview.security.util.CustomNamingStrategy
     database: sqlserver
     database-platform: org.hibernate.dialect.SQLServerDialect
 
