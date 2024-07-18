@@ -19,11 +19,19 @@ spring:
         uri: http://localhost:8090
         predicates:
          - Path=/auth/v1/**
+      - id: micro-auth2
+        uri: http://localhost:8090
+        predicates:
+          - Path=/auth/**
       - id: micro-usuarios
         uri: http://localhost:8091
         predicates:
          - Path=/api/usuarios/**
+        filters:
+          - GatewayAuthenticationFilter
       - id: micro-hoteles
         uri: http://localhost:8092
         predicates:
          - Path=/api/hoteles/**
+        filters:
+          - GatewayAuthenticationFilter

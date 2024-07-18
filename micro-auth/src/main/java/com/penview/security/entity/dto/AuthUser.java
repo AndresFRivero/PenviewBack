@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthCreateUser {
+public class AuthUser {
 	
 	@NotBlank
 	private String username;
@@ -20,6 +20,6 @@ public class AuthCreateUser {
 	private String password;
 	
 	@Valid
-	private AuthCreateRoleRequest role;
+	private AuthRoleRequest role;
 
 }

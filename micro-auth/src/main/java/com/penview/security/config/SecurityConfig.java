@@ -14,7 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.penview.security.filter.JwtAuthenticationFilter;
 import com.penview.security.service.UserDetailServiceImpl;
@@ -42,7 +42,7 @@ public class SecurityConfig {
 					http.requestMatchers(HttpMethod.GET, "/auth/findAll").hasAnyRole("ADMIN", "DEVELOPER", "INVITED");
 					http.anyRequest().denyAll();
 				})
-				.addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JwtAuthenticationFilter(jwtUtils), BasicAuthenticationFilter.class)
 				.build();
 	}
 	

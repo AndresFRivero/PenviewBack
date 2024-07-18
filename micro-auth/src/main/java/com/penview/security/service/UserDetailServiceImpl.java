@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import com.penview.security.entity.RoleEntity;
 import com.penview.security.entity.UserEntity;
-import com.penview.security.entity.dto.AuthCreateUser;
+import com.penview.security.entity.dto.AuthUser;
 import com.penview.security.entity.dto.AuthLoginRequest;
 import com.penview.security.entity.dto.AuthResponse;
 import com.penview.security.repository.IRoleRepository;
@@ -96,7 +96,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
 	}
 	
-	public AuthResponse create(AuthCreateUser authCreateUser) {
+	public AuthResponse create(AuthUser authCreateUser) {
 		
 		String username = authCreateUser.getUsername();
 		
