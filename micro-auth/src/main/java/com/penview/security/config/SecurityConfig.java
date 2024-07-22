@@ -32,33 +32,21 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
 		
 		return httpSecurity
-				.csrf(csrf -> csrf.disable())
-				.httpBasic(Customizer.withDefaults())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(http -> {
-					http.requestMatchers(HttpMethod.POST, "/auth/v1/**").permitAll();
-					http.requestMatchers(HttpMethod.GET, "/auth/hello-secured").hasAuthority("CREATE");
-					http.requestMatchers(HttpMethod.GET, "/auth/post").hasAuthority("CREATE");
-					http.requestMatchers(HttpMethod.GET, "/auth/findAll").hasAnyRole("ADMIN", "DEVELOPER", "INVITED");
-					http.anyRequest().denyAll();
-				})
-				.addFilterBefore(new JwtAuthenticationFilter(jwtUtils), BasicAuthenticationFilter.class)
-				.build();
-	}
+                .csrf(csrf -> csrf.disable())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(http -> {
+                	http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/auth/v1/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/auth/hello-secured").hasAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.GET, "/auth/post").hasAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.GET, "/auth/findAll").hasAnyRole("ADMIN", "DEVELOPER", "INVITED");
+                    http.anyRequest().denyAll();
+                })
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), BasicAuthenticationFilter.class)
+                .build();
 	
-	/*@Bean
-	public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
-		return httpSecurity
-				.csrf(csrf -> csrf.disable())
-				.httpBasic(Customizer.withDefaults())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.build();
 	}
-	
-	@Bean
-	public AuthenticationManager authenticationManager () throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}*/
 	
 	@Bean	
 	public AuthenticationProvider authenticationProvider (UserDetailServiceImpl userDetailService) {

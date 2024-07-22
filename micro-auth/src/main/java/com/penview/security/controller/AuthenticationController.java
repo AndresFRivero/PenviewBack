@@ -19,8 +19,9 @@ import com.penview.security.util.JwtUtils;
 import jakarta.validation.Valid;
 
 @RestController
+//@CrossOrigin
 @RequestMapping("/auth/v1")
-public class AuthAuthenticationController {
+public class AuthenticationController {
 	
 	@Autowired
 	private UserDetailServiceImpl userDetailService;
