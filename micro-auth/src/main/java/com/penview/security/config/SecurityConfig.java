@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                 	http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/auth/v1/**").permitAll();
+                    http.requestMatchers(HttpMethod.PUT, "/auth/v1/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/auth/hello-secured").hasAuthority("CREATE");
                     http.requestMatchers(HttpMethod.GET, "/auth/post").hasAuthority("CREATE");
                     http.requestMatchers(HttpMethod.GET, "/auth/findAll").hasAnyRole("ADMIN", "DEVELOPER", "INVITED");

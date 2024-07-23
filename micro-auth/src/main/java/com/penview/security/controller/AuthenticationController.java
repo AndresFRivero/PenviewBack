@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +31,26 @@ public class AuthenticationController {
 	private JwtUtils jwtUtils;
 	
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
+	public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest) {
 		return new ResponseEntity<>(this.userDetailService.login(userRequest), HttpStatus.OK);
 	}
 	
 	@PostMapping("/signup")
 	public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthUser authCreateUser){
-		return new ResponseEntity<>(this.userDetailService.create(authCreateUser), HttpStatus.OK);
+		
+		AuthResponse auth = this.userDetailService.create(authCreateUser);
+		
+		if (auth.isStatus()) {
+			return ResponseEntity.status(HttpStatus.OK).body(auth);			
+		}
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(auth);
+		
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<AuthResponse> update(@RequestBody @Valid AuthUser authUser){
+		return new ResponseEntity<>(this.userDetailService.update(authUser), HttpStatus.OK);
 	}
 	
 	@PostMapping("/validate")

@@ -1,6 +1,5 @@
 package com.penview.security.entity.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +18,6 @@ public class AuthUser {
 	@NotBlank
 	private String password;
 	
-	@Valid
 	private AuthRoleRequest role;
 
 }

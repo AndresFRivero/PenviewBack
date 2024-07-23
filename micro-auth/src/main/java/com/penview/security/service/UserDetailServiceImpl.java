@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		UserEntity userEntity = userRepository.findByUsername(username);
+		UserEntity userEntity = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User's username not exists"));
 		
 		if (userEntity == null) {
 			return (UserDetails) new UsernameNotFoundException(username);
@@ -104,6 +106,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		
 		List<String> roles = authCreateUser.getRole().getRoles();
 		
+		Optional<UserEntity> ouser = this.userRepository.findByUsername(username);
+		
+		if (ouser.isPresent()) {
+		
+			AuthResponse authResponse = new AuthResponse(username, "username already exists", "", false);
+			
+			return authResponse;
+			
+		}
+		
 		Set<RoleEntity> rolesSet = roleRepository.findRoleEntitiesByRoleEnumIn(roles).stream().collect(Collectors.toSet());
 		
 		if (rolesSet.isEmpty()) {
@@ -133,6 +145,51 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		String token = jwtUtils.createToken(authentication);
 		
 		AuthResponse authResponse = new AuthResponse(userCreated.getUsername(), "User created succesfully", token, true);
+				
+		return authResponse;
+	}
+	
+	public AuthResponse update(AuthUser authUser) {
+		
+		String username = authUser.getUsername();
+		
+		String password = authUser.getPassword();
+		
+		UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User's username not exists"));
+		
+		if (user == null) {
+			throw new UsernameNotFoundException("User doesn't exits");
+		}
+		
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		
+		user.getRoles()
+		.forEach(role -> 
+			authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+		
+		user.getRoles().stream()
+		.flatMap(role -> role.getPermissions().stream())
+			.forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
+		
+		List<String> roles = user.getRoles().stream().map(rol -> rol.getRoleEnum().name()).collect(Collectors.toList());
+		
+		Set<RoleEntity> rolesSet = roleRepository.findRoleEntitiesByRoleEnumIn(roles)
+				.stream().collect(Collectors.toSet());
+		
+		UserEntity userEntity = UserEntity.builder()
+				.consecutivoUser(user.getConsecutivoUser())
+				.username(username)
+				.password(passwordEncoder.encode(password))
+				.roles(rolesSet)
+				.build();
+		
+		UserEntity userUpdated = this.userRepository.save(userEntity);
+		
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userUpdated.getUsername(), userUpdated.getPassword(), authorities);
+		
+		String token = jwtUtils.createToken(authentication);
+		
+		AuthResponse authResponse = new AuthResponse(userUpdated.getUsername(), "User updated succesfully", token, true);
 				
 		return authResponse;
 	}
